@@ -33,20 +33,10 @@ all_posts = [
 def home():
     return render_template("index.html")
 
-@app.route("/posts", methods=['GET', 'POST'])
-def posts():
-    # Read from the database    
-    if request.method == 'POST':
-        post_title = request.form['title']
-        post_content = request.form['content']
-        post_author = request.form['author']
-        new_post = BlogPost(title=post_title, content=post_content, author=post_author)
-        db.session.add(new_post)
-        db.session.commit()
-        return redirect('/posts')
-    else:
-        all_posts = BlogPost.query.order_by(BlogPost.date_posted).all()
-        return render_template("posts.html", posts=all_posts)
+@app.route("/posts")
+def posts():   
+    all_posts = BlogPost.query.order_by(BlogPost.date_posted).all()
+    return render_template("posts.html", posts=all_posts)
 
 
 @app.route('/posts/delete/<int:id>')
@@ -76,6 +66,20 @@ def edit(id):
 @app.route("/about")
 def about():
     return render_template('about.html')
+
+@app.route('/posts/new' ,methods=['GET', 'POST'])
+def new_post():
+        if request.method == 'POST':                
+            post_title = request.form['title']
+            post_content = request.form['content']
+            post_author = request.form['author']
+            new_post = BlogPost(title=post_title, content=post_content, author=post_author)
+            db.session.add(new_post)
+            db.session.commit()
+            return redirect('/posts')
+        else:
+            return render_template('new_post.html')
+
 
 
 
